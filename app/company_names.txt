@@ -1,0 +1,7 @@
+CompanyId,CompanyName
+1,"Dice Dice Baby"
+2,"Dice 'R Us"
+3,"High Rollers" 
+4,"Lucky Town" 
+5,"Pips and Dots" 
+6,"Slice and Dice"
