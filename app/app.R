@@ -175,9 +175,10 @@ dice_distributions <- getMyDistributions()
 # we want to keep text input but students
 # can still type in a number than the max
 # set in the input, this is a safety check
-# to compare in our code
+# to compare in our code and prevent the server
+# from being overloaded
 MAX_SIMULATIONS = 500
-
+MAX_SAMPLES = 10000
 
 ui <- navbarPage(
   title = "Dice Explorer",
@@ -202,7 +203,7 @@ ui <- navbarPage(
                # input
                numericInput(
                  inputId = "panel1_input_sample_size",
-                 label = "Sample Size",
+                 label = "Sample Size  (10,000 max)",
                  value = 10,
                  min = 1,
                  max = 10000
@@ -244,7 +245,7 @@ ui <- navbarPage(
         # input
         numericInput(
           inputId = "panel2_input_sample_size",
-          label = "Sample Size",
+          label = "Sample Size (10,000 max)",
           value = 10,
           min = 1,
           max = 10000
@@ -286,7 +287,7 @@ ui <- navbarPage(
                # input
                numericInput(
                  inputId = "panel3_input_sample_size",
-                 label = "Sample Size",
+                 label = "Sample Size (10,000 max)",
                  value = 10,
                  min = 1,
                  max = 10000
@@ -344,6 +345,18 @@ server <- function(input, output, session) {
   ## #################################
   panel1_rv <- eventReactive(input$panel1_btn_graph, {
     total_samples = input$panel1_input_sample_size
+    if ( total_samples > MAX_SAMPLES )
+    {
+      total_samples = MAX_SAMPLES
+      
+      # Force update the UI component
+      updateTextInput(
+        session,
+        "panel1_input_sample_size",
+        value = MAX_SAMPLES
+      )
+    }
+
     companyId = as.numeric(input$panel1_input_company_id)
     companyWeights = dice_distributions[[companyId]]
     dice_roll = sample(companyWeights, total_samples, replace = T)
@@ -379,6 +392,11 @@ server <- function(input, output, session) {
   myTitle <- eventReactive(input$panel1_btn_graph, {
     companyName = getCompanyById(as.numeric(input$panel1_input_company_id))
     rolls = input$panel1_input_sample_size
+    if ( rolls > MAX_SAMPLES )
+    {
+      # we need to reset the input to max and override
+      rolls = MAX_SAMPLES
+    }
     title = paste(rolls, " dice rolls from Company: ", companyName)
   })
   
@@ -442,9 +460,24 @@ server <- function(input, output, session) {
   # Panel 2
   ######################################################
   panel2_rv <- eventReactive(input$panel2_btn_graph, {
-    total_samples = input$panel2_input_sample_size
+    
     companyId = as.numeric(input$panel2_input_company_id)
     sample_dist = dice_distributions[[companyId]]
+    
+    total_samples = input$panel2_input_sample_size
+    if ( total_samples > MAX_SAMPLES )
+    {
+      # we need to reset the input to max and override
+      total_samples = MAX_SAMPLES
+      
+      # Force update the UI component
+      updateTextInput(
+        session,
+        "panel2_input_sample_size",
+        value = MAX_SAMPLES
+      )
+    }
+    
     dice_roll = sample(sample_dist, total_samples, replace = T)
     tbl = table(dice_roll)
     dd = data.frame(tbl)
@@ -487,11 +520,23 @@ server <- function(input, output, session) {
   myTitle2 <- eventReactive(input$panel2_btn_graph, {
     companyName = getCompanyById(as.numeric(input$panel2_input_company_id))
     rolls = input$panel2_input_sample_size
+    if ( rolls > MAX_SAMPLES )
+    {
+      rolls = MAX_SAMPLES
+    }
+
     title = paste(companyName, ":", rolls, "dice rolls")
   })
   
   # ggplot our data frame
   output$panel2_graph_histogram <- renderPlot({
+    
+    sample_size = input$panel2_input_sample_size
+    if ( sample_size > MAX_SAMPLES )
+    {
+      sample_size = MAX_SAMPLES
+    }
+    
     ggplot(panel2_rv()) +
       geom_bar(aes(x = dice_roll, y = Freq, fill = dice_roll), stat = 'identity') +
       ggtitle(myTitle2()) +
@@ -501,14 +546,14 @@ server <- function(input, output, session) {
         face = "bold"
       )) +
       geom_hline(
-        yintercept = isolate(input$panel2_input_sample_size / 6),
+        yintercept = (sample_size / 6.0),
         linetype = "dashed",
         color = "red"
       ) +
       annotate(
         "text",
         x = 3.25,
-        y = isolate(input$panel2_input_sample_size / 5.8),
+        y = (sample_size / 5.8),
         label = "Expected Value",
         color = "red",
         size = 6
@@ -618,6 +663,11 @@ server <- function(input, output, session) {
   panel3_ggplot_title <- eventReactive(input$panel3_btn_graph, {
     companyName = getCompanyById(as.numeric(input$panel3_input_company_id))
     rolls = input$panel3_input_sample_size
+    if ( rolls > MAX_SAMPLES )
+    {
+      rolls = MAX_SAMPLES
+    }
+
     sims = input$panel3_input_simulations
     if ( sims > MAX_SIMULATIONS ) {
       sims = MAX_SIMULATIONS
@@ -627,6 +677,19 @@ server <- function(input, output, session) {
   
   panel3_rv <- eventReactive(input$panel3_btn_graph, {
     total_samples = input$panel3_input_sample_size
+    if ( total_samples > MAX_SAMPLES )
+    {
+      # we need to reset the input to max and override
+      total_samples = MAX_SAMPLES
+      
+      # Force update the UI component
+      updateTextInput(
+        session,
+        "panel3_input_sample_size",
+        value = MAX_SAMPLES
+      )
+    }
+    
     companyId = as.numeric(input$panel3_input_company_id)
     sample_dist = dice_distributions[[companyId]]
     
