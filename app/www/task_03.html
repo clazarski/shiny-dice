@@ -1,25 +1,16 @@
-  
-<h3>Task 3: Power</h3>
 
+<!-- Task 3 instructions -->
+<h3> Task 3: Making a decision </h3>
 <p>
-A hypothesis test is only as good as the sample used. A hypothesis test is not perfect. It tries to make the correct decision but when the difference between the null hypothesis and the truth are small it makes it hard for the hypothesis test to reach the correct conclusion. We can evaluate how well a specific hypothesis test will do under specified alternatives by investigating the power of the test. The power of the test is the ability of a hypothesis test to correctly reject a false null. For this investigation you will determine the power of the goodness of fit test to detect the companies not making fair dice.
-</p>
-
-<p>
-On this page you will see the distribution of the dice produced by each company and you can clearly see that all but one company was producing fair dice. In this simulation you can select a company, choose a sample size to roll the dice with, and then repeat that roll a set number of times. The simulation will note each time the simulation runs the test statistic and plot it on the graph. In all instances the test should produce a test statistic that rejects the null hypothesis. The power which is calculated below the graph indicates the percent of times that the simulation correctly rejected the null hypothesis.
-</p>
-
-<p>
-    Complete the following to investigate the power of this test:
+     We will call the sum of the scaled squared differences our test statistic. In order to use our test statistic to measure how unfair a dice is we need a decision rule. One way to develop a rule is to understand how our test statistic behaves for a fair company. We believe that Pips and Dots is fair so we will use their dice.  
+     
+     Notice the default settings for this page. A sample of size 30 is taken 1 time and the summary measure we developed is computed. Click the "Update sample size" button and you will see this measure plotted on the graph. Change the "number of simulations" to 10 and observe what happens. You now have 10 dots, each represents a sample of 30 rolls and the summary measure computed for each of those rolls.  
 </p>
 
 <ol>
 
-  <li> Dice R Us is a company that is close to being fair, what size sample is needed for the power to be near 90%?</li>
-  <li> Dice Dice Baby is a company that is far from being fair, what size sample is needed for the power to be near 90%?</li>
-  <li> For the two companies you just explored, how is the sample size related to the power of the test?</li>
-  <li> How is the degree to which the truth varies from the null hypothesis related to the power of the test?</li>
-  <li> Type II error is also presented. What is it's relation to power? Can you explain what a type II error is?</li>
-  <li> Pips and Dots is a company that produced fair dice. Evaluate the power of the test for this company? Can you explain what you are seeing? </li>
-  
-</ol>
+    <li> We want to know if there is any pattern to this summary measure when we observe a fair dice. Change the sample size and number of simulations and explore what happens. Is there a pattern for how this summary measure behaves? </li>
+    <li> How can we use this pattern to make a decision? We simply need to decide when we think an observed value is typical or unusual. Click on the "Show cut-off slider" and adjust it. Notice the summary table below the graph tells you what percent of observations are typical or unexpected based on where you put the line. What slide value will allow only 5% of observations to be unexpected? Does this slider value work for any sample size?</li>
+    <li> Where we put our slider is now our decision rule. If a test statistic is greater than our slider value we decide the dice is unfair, since those values are not what we expect to happen from fair dice. If it is less than our slider value, we decide the dice is fair.</li>
+    
+    
